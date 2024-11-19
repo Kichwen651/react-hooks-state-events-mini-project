@@ -5,12 +5,9 @@ function Task({ text, category, onDelete }) {
     <div className="task">
       <div className="label">{category}</div>
       <div className="text">{text}</div>
-      <button className="delete" onClick={onDelete}>X</button>
+      <button className="delete" onClick={() => onDelete(text)}>X</button>
     </div>
   );
 }
 
 export default Task;
-
-
-

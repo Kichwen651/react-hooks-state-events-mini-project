@@ -1,16 +1,31 @@
 import React, { useState } from "react";
 
 function NewTaskForm({ categories, onTaskFormSubmit }) {
-  const [text, setText] = useState("");
-  const [category, setCategory] = useState(categories[0]);
+  // State for controlled inputs
+  const [taskText, setTaskText] = useState("");
+  const [taskCategory, setTaskCategory] = useState(categories[1] || ""); // Default to first category after "All"
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!text) return; // Prevent submission if text is empty
-    const newTask = { text, category, id: Date.now() };
+  // Handle text input change
+  const handleTextChange = (event) => setTaskText(event.target.value);
+
+  // Handle category dropdown change
+  const handleCategoryChange = (event) => setTaskCategory(event.target.value);
+
+  // Handle form submission
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Create a new task object and pass it to onTaskFormSubmit
+    const newTask = {
+      text: taskText,
+      category: taskCategory,
+    };
+
     onTaskFormSubmit(newTask);
-    setText("");
-    setCategory(categories[0]);
+
+    // Clear the form inputs after submission
+    setTaskText("");
+    setTaskCategory(categories[1] || ""); // Reset to default category after "All"
   };
 
   return (
@@ -20,20 +35,25 @@ function NewTaskForm({ categories, onTaskFormSubmit }) {
         <input
           type="text"
           name="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={taskText}
+          onChange={handleTextChange}
         />
       </label>
       <label>
         Category
         <select
           name="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={taskCategory}
+          onChange={handleCategoryChange}
         >
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
+          {/* Exclude "All" and render options for each category */}
+          {categories
+            .filter((category) => category !== "All")
+            .map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
         </select>
       </label>
       <input type="submit" value="Add task" />
